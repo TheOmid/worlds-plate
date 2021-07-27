@@ -1,5 +1,6 @@
 import pandas as pd
 import plotly.express as px
+import plotly.figure_factory as ff
 
 
 class DataVisualizer:
@@ -26,3 +27,16 @@ class DataVisualizer:
                      title="Number of Recipes Per Cuisine",
                      color="cuisine")
         fig.show()
+
+    def graphDistIngredients(self):
+        fig = ff.create_distplot([self.train['number_ingredients']], [
+                "Distribution of Number of Ingredients"], curve_type='normal')
+        fig.show()
+
+        def graphIngredientsHistogram():
+            fig = px.histogram(self.train, x="number_ingredients",
+                         labels={"number_ingredients": "Number of Ingredients"},
+                         title="Histogram of Ingredients")
+            fig.show()
+
+        graphIngredientsHistogram()
