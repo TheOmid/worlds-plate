@@ -1,6 +1,7 @@
 import pandas as pd
 import plotly.express as px
 import plotly.figure_factory as ff
+import operator
 
 
 class DataVisualizer:
@@ -30,13 +31,39 @@ class DataVisualizer:
 
     def graphDistIngredients(self):
         fig = ff.create_distplot([self.train['number_ingredients']], [
-                "Distribution of Number of Ingredients"], curve_type='normal')
+            "Distribution of Number of Ingredients"], curve_type='normal')
         fig.show()
 
         def graphIngredientsHistogram():
             fig = px.histogram(self.train, x="number_ingredients",
-                         labels={"number_ingredients": "Number of Ingredients"},
-                         title="Histogram of Ingredients")
+                               labels={
+                                   "number_ingredients": "Number of Ingredients"},
+                               title="Histogram of Ingredients")
             fig.show()
 
         graphIngredientsHistogram()
+
+    def getMostCommonIngredients(self, limit =10):
+        ingredient_dict = self.getUniqueIngredientsCount()
+        ingredient_dict = self.sortDictionaryByValue(ingredient_dict)
+        df = pd.DataFrame(ingredient_dict.items(), columns=['ingredient', 'count'])
+
+        return df.iloc[-limit:, :]
+
+    def sortDictionaryByValue(self, dictIn):
+        sorted_list = sorted(
+            dictIn.items(), key=operator.itemgetter(1))
+
+        return dict(sorted_list)
+
+    def getUniqueIngredientsCount(self):
+        ingredients_list = [
+            ingredient for ingredients in self.train['ingredients'] for ingredient in ingredients
+        ]
+        ingredient_dict = {}
+        for ingredient in ingredients_list:
+            ingredient_dict[ingredient] = [ingredient_dict[ingredient][0] +1] \
+                if ingredient in ingredient_dict \
+                else [1]
+
+        return ingredient_dict
