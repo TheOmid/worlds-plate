@@ -50,6 +50,20 @@ class DataVisualizer:
 
         return df.iloc[-limit:, :]
 
+
+    def graphMostCommonIngredients(self, limit=10):
+        data = self.getMostCommonIngredients(limit)
+        fig = px.bar(data,
+                     x="ingredient",
+                     y="count",
+                     labels={
+                         "ingredient": "Ingredient",
+                         "count": "Count"
+                     },
+                     title="Most Popular Ingredients Worldwide",
+                     color="ingredient")
+        fig.show()
+
     def sortDictionaryByValue(self, dict):
         return {k: v[0] for k, v in sorted(dict.items(), key=lambda item: item[1])}
 
