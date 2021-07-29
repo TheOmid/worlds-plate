@@ -14,7 +14,7 @@ class DataVisualizer:
         recipiesPerCuisineCount = self.train['cuisine'].value_counts()
         return pd.DataFrame({'cuisine': recipiesPerCuisineCount.index, 'number of recipes': recipiesPerCuisineCount.values})
 
-    def graphRecipesPerCuisine(self):
+    def selfgraphRecipesPerCuisine(self):
         data = self.getRecipesPerCuisine()
         fig = px.bar(data,
                      x="number of recipes",
