@@ -43,18 +43,15 @@ class DataVisualizer:
 
         graphIngredientsHistogram()
 
-    def getMostCommonIngredients(self, limit =10):
+    def getMostCommonIngredients(self, limit=10):
         ingredient_dict = self.getUniqueIngredientsCount()
         ingredient_dict = self.sortDictionaryByValue(ingredient_dict)
         df = pd.DataFrame(ingredient_dict.items(), columns=['ingredient', 'count'])
 
         return df.iloc[-limit:, :]
 
-    def sortDictionaryByValue(self, dictIn):
-        sorted_list = sorted(
-            dictIn.items(), key=operator.itemgetter(1))
-
-        return dict(sorted_list)
+    def sortDictionaryByValue(self, dict):
+        return {k: v[0] for k, v in sorted(dict.items(), key=lambda item: item[1])}
 
     def getUniqueIngredientsCount(self):
         ingredients_list = [
