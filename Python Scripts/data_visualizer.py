@@ -1,9 +1,8 @@
 import pandas as pd
 import plotly.express as px
 import plotly.figure_factory as ff
-import operator
 
-
+#FIXME: code structure can be improved
 class DataVisualizer:
     def __init__(self):
         # Windows Path issues: use string literal and fullpath to read using pandas
@@ -15,7 +14,7 @@ class DataVisualizer:
         recipiesPerCuisineCount = self.train['cuisine'].value_counts()
         return pd.DataFrame({'cuisine': recipiesPerCuisineCount.index, 'number of recipes': recipiesPerCuisineCount.values})
 
-    def graphRecipesPerCuisine(self):
+    def selfgraphRecipesPerCuisine(self):
         data = self.getRecipesPerCuisine()
         fig = px.bar(data,
                      x="number of recipes",
@@ -50,7 +49,6 @@ class DataVisualizer:
 
         return df.iloc[-limit:, :]
 
-
     def graphMostCommonIngredients(self, limit=10):
         data = self.getMostCommonIngredients(limit)
         fig = px.bar(data,
@@ -65,16 +63,14 @@ class DataVisualizer:
         fig.show()
 
     def sortDictionaryByValue(self, dict):
-        return {k: v[0] for k, v in sorted(dict.items(), key=lambda item: item[1])}
+        return {k: v for k, v in sorted(dict.items(), key=lambda item: item[1])}
 
     def getUniqueIngredientsCount(self):
-        ingredients_list = [
-            ingredient for ingredients in self.train['ingredients'] for ingredient in ingredients
-        ]
+        ingredients_list = self.getAllIngredients()
         ingredient_dict = {}
         for ingredient in ingredients_list:
-            ingredient_dict[ingredient] = [ingredient_dict[ingredient][0] +1] \
+            ingredient_dict[ingredient] = ingredient_dict[ingredient] +1 \
                 if ingredient in ingredient_dict \
-                else [1]
+                else 1
 
         return ingredient_dict
