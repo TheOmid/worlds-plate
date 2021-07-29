@@ -2,7 +2,7 @@ import pandas as pd
 import plotly.express as px
 import plotly.figure_factory as ff
 
-#FIXME: code structure can be improved
+#FIXME: code structure can be improved, refactor when possible
 class DataVisualizer:
     def __init__(self):
         # Windows Path issues: use string literal and fullpath to read using pandas
@@ -14,7 +14,7 @@ class DataVisualizer:
         recipiesPerCuisineCount = self.train['cuisine'].value_counts()
         return pd.DataFrame({'cuisine': recipiesPerCuisineCount.index, 'number of recipes': recipiesPerCuisineCount.values})
 
-    def selfgraphRecipesPerCuisine(self):
+    def graphRecipesPerCuisine(self):
         data = self.getRecipesPerCuisine()
         fig = px.bar(data,
                      x="number of recipes",
@@ -43,7 +43,8 @@ class DataVisualizer:
         graphIngredientsHistogram()
 
     def getMostCommonIngredients(self, limit=10):
-        ingredient_dict = self.getUniqueIngredientsCount()
+        ingredients_list = self.getAllIngredients(self.train['ingredients'])
+        ingredient_dict = self.getUniqueIngredientsCount(ingredients_list)
         ingredient_dict = self.sortDictionaryByValue(ingredient_dict)
         df = pd.DataFrame(ingredient_dict.items(), columns=['ingredient', 'count'])
 
@@ -58,15 +59,14 @@ class DataVisualizer:
                          "ingredient": "Ingredient",
                          "count": "Count"
                      },
-                     title="Most Popular Ingredients Worldwide",
+                     title=f"{limit} Most Popular Ingredients Worldwide",
                      color="ingredient")
         fig.show()
 
     def sortDictionaryByValue(self, dict):
         return {k: v for k, v in sorted(dict.items(), key=lambda item: item[1])}
 
-    def getUniqueIngredientsCount(self):
-        ingredients_list = self.getAllIngredients()
+    def getUniqueIngredientsCount(self, ingredients_list):
         ingredient_dict = {}
         for ingredient in ingredients_list:
             ingredient_dict[ingredient] = ingredient_dict[ingredient] +1 \
