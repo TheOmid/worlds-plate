@@ -108,3 +108,9 @@ class DataVisualizer:
                      title=f"{limit} Most Popular Ingredients of {cuisine} cuisine",
                      color="ingredient")
         fig.show()
+
+    def avgNumIngredientsPerCuisine(self, cuisine="italian"):
+        df = self.train.groupby('cuisine')
+        for groupId, group in df:
+            if groupId == cuisine:
+                return group['number_ingredients'].sum() / group.shape[0]
