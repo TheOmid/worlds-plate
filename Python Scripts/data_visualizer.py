@@ -74,3 +74,37 @@ class DataVisualizer:
                 else 1
 
         return ingredient_dict
+
+    def getAllIngredients(self, ingredients_list):
+        ingredients_list = [
+            ingredient for ingredients in ingredients_list for ingredient in ingredients
+        ]
+
+        return ingredients_list
+
+    def getUniqueIngredientsCountByCuisine(self, cuisine):
+        df = self.train.groupby('cuisine')
+        for groupId, group in df:
+            if groupId == cuisine:
+                ingredients_list = self.getAllIngredients(group["ingredients"]) 
+                return self.getUniqueIngredientsCount(ingredients_list)
+
+    def getMostCommonIngredientsByCuisine(self, cuisine, limit):
+        ingredient_dict = self.getUniqueIngredientsCountByCuisine(cuisine)
+        ingredient_dict = self.sortDictionaryByValue(ingredient_dict)
+        df = pd.DataFrame(ingredient_dict.items(), columns=['ingredient', 'count'])
+
+        return df.iloc[-limit:, :]
+
+    def graphMostCommonIngredientsByCuisine(self, cuisine="italian", limit=10):
+        data = self.getMostCommonIngredientsByCuisine(cuisine, limit)
+        fig = px.bar(data,
+                     x="ingredient",
+                     y="count",
+                     labels={
+                         "ingredient": "Ingredient",
+                         "count": "Count"
+                     },
+                     title=f"{limit} Most Popular Ingredients of {cuisine} cuisine",
+                     color="ingredient")
+        fig.show()
